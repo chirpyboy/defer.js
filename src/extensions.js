@@ -153,32 +153,116 @@
      *
      * @returns {void}
      */
+    // function defersmart() {
+    //     function loadscript(scripts, tag, base, attr) {
+    //         base    = '[type=deferjs]';
+    //         attr    = '[async]';
+    //         scripts = query(base + ':not(' + attr + ')').concat(query(base + attr));
+    //         //debugger
+    //         var asyncScripts = scripts.filter(function(script){
+    //             return false;
+    //             //return script.async || script.getAttribute("data-after")
+    //         });
+    //
+    //         scripts = scripts.filter(function(script){ //Loại bỏ các async script
+    //             return asyncScripts.indexOf(script) == -1
+    //         });
+    //
+    //         function appendDom(script){
+    //             return (function(base){
+    //                 base.parentNode.removeChild(base);
+    //                 base[REMOVE_ATTRIBUTE](ATTR_TYPE);
+    //                 var tag = dom(base[NODE_NAME]);
+    //
+    //                 for (var attr in base) {
+    //                     var value = base[attr];
+    //                     if (typeof value == 'string' && tag[attr] != value) {
+    //                         tag[attr] = value;
+    //                     }
+    //                 }
+    //                 return tag
+    //             })(script)
+    //         };
+    //
+    //         //Xử lý các script async
+    //         asyncScripts.forEach(function(script){
+    //             (function(script){
+    //                 var afterIdsStr = script.getAttribute("data-after")
+    //                 var isDepended = !!afterIdsStr
+    //                 if(isDepended){
+    //                     var idsDepended = afterIdsStr.split(",").map(function(id){
+    //                         return id.trim();
+    //                     }).filter(function(id){
+    //                         return is !== ""
+    //                     })
+    //                     window.deferscript(script.src, script.id, 0, null, idsDepended)
+    //                 }else{
+    //                     appendDom(script)
+    //                 }
+    //             })(script)
+    //         });
+    //
+    //         //Xử lý các script sync
+    //         (function appendtag() {
+    //             if (scripts == FALSE) {return}
+    //
+    //             base = scripts.shift();
+    //
+    //             var tag = appendDom(base)
+    //
+    //             //if (tag[ATTR_SRC] && !tag[HAS_ATTRIBUTE]('async')) {
+    //                 tag.onload = tag.onerror = appendtag;
+    //             //} else {
+    //                 //defer(appendtag, 0.1);
+    //             //}
+    //         })();
+    //     }
+    //
+    //     defer(loadscript, 4);
+    // }
+
     function defersmart() {
         function loadscript(scripts, tag, base, attr, value) {
             base    = '[type=deferjs]';
             attr    = '[async]';
-            scripts = query(base + ':not(' + attr + ')').concat(query(base + attr));
+            scripts = query(base + ':not(' + attr + ')');
+            let asyncScripts = query(base + attr);
 
-            (function appendtag() {
-                if (scripts == FALSE) {return}
-
-                base = scripts.shift();
+            function append(base, async = false){
                 base.parentNode.removeChild(base);
-                base[REMOVE_ATTRIBUTE](ATTR_TYPE);
-                tag = dom(base[NODE_NAME]);
 
+                base[REMOVE_ATTRIBUTE](ATTR_TYPE);
+
+                tag = dom(base[NODE_NAME]);
+                if(async){
+                    tag.async = 1
+                }
                 for (attr in base) {
                     value = base[attr];
                     if (typeof value == 'string' && tag[attr] != value) {
                         tag[attr] = value;
                     }
                 }
+                return tag
+            };
 
-                if (tag[ATTR_SRC] && !tag[HAS_ATTRIBUTE]('async')) {
-                    tag.onload = tag.onerror = appendtag;
-                } else {
-                    defer(appendtag, 0.1);
-                }
+            //xử lý async tag
+            asyncScripts.forEach(script => {
+                append(script, true)
+            });
+            //Preload sync tag
+            scripts.forEach(script => {
+                window.deferPreload(script.src)
+            });
+
+            //xử lý sync tag
+            (function appendtag() {
+                if (scripts == FALSE) {return}
+
+                base = scripts.shift();
+
+                tag = append(base)
+                tag.onload = tag.onerror = appendtag;
             })();
         }
 

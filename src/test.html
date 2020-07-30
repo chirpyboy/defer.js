@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    // setTimeout(() => {
+    //   var tags = document.getElementsByTagName("script")
+    //   console.log("Total tags: " + tags.length)
+    // }, 0)
+
+  </script>
+<!--  <script>-->
+<!--    /*@shinsenter/defer.js*/-->
+<!--    !function(t,c,e,n,i,r){r=/p/.test(c.readyState);var o=0<=navigator.userAgent.indexOf('Firefox');function f(t,e){r?n(t,e||32):i.push(t,e)}var a,u,s=(a=new Set,u=[],{publish:function(t){a.add(t),l()},subscribe:function(t,e){d([t],e)},subscribes:d});function d(t,e){u.push({hasFired:!1,ids:t,cb:e}),l()}function l(){u.forEach(function(t){if(!0!==t.hasFired){var e=!0;t.ids.forEach(function(t){a.has(t)||(e=!1)}),e&&(t.hasFired=!0,t.cb.apply())}})}function h(t,e,n,i){return e&&c.getElementById(e)||(i=c.createElement(t||'SCRIPT'),e&&(i.id=e),i.onload=function(){e&&s.publish(e),n&&n()},c.head.appendChild(i)),i||{}}t.addEventListener('on'+e in t?e:'load',function(){for(r=1;i[0];)f(i.shift(),i.shift())}),f._=h,t.defer=f,t.deferscript=function(t,e,n,i,r){Array.isArray(r)&&0<r.length?(function(t,e){if(e=e||'script',o){var n=c.createElement('object');n.data=t,n.width=0,n.height=0,c.body.append(n)}else{var i=c.createElement('link');i.setAttribute('rel','preload'),i.href=t,i.as=e,c.head.append(i)}}(t),s.subscribes(r,function(){f(function(){h('',e,i).src=t},1)})):f(function(){h('',e,i).src=t},n)}}(this,document,'pageshow',setTimeout,[]),function(u,n){var s='IntersectionObserver',d='data-',l=d+'lazied',h='forEach',p='getAttribute',b='setAttribute',v=Function(),m=u.defer||v,o=m._||v;function y(t,e){return[].slice.call((e||n).querySelectorAll(t))}function t(a){return function(t,e,r,c,o,f){m(function(n,e){function i(n){!1!==(c||v).call(n,n)&&((f||['srcset','src','style'])[h](function(t,e){(e=n[p](d+t))&&n[b](t,e)}),y('SOURCE',n)[h](i),'load'in n&&n.load()),n.className+=' '+(r||'lazied')}e=s in u?(n=new u[s](function(t){t[h](function(t,e){t.isIntersecting&&(e=t.target)&&(n.unobserve(e),i(e))})},o)).observe.bind(n):i,y(t||a+'['+d+'src]:not(['+l+'])')[h](function(t){t[p](l)||(t[b](l,a),e(t))})},e)}}function e(){m(function(e,t,n,i){var r=(e=y((n='[type=deferjs]')+':not('+(i='[async]')+')').concat(y(n+i))).filter(function(t){return t.async||t.getAttribute('data-after')});function c(t){!function(t){t.parentNode.removeChild(t),t.removeAttribute('type');var e=o(t.nodeName);for(var n in t){var i=t[n];'string'==typeof i&&e[n]!=i&&(e[n]=i)}}(t)}e=e.filter(function(t){return-1==r.indexOf(t)}),r.forEach(function(t){!function(t){var e=t.getAttribute('data-after');if(!!e){var n=e.split(',').map(function(t){return t.trim()}).filter(function(t){return''!==is});u.deferscript(t.src,t.id,0,null,n)}else c(t)}(t)}),function t(){0!=e&&(c(n=e.shift()),m(t,.1))}()},4)}e(),u.deferstyle=function(e,n,t,i){m(function(t){(t=o('LINK',n,i)).rel='stylesheet',t.href=e},t)},u.deferimg=t('IMG'),u.deferiframe=t('IFRAME'),m.all=e}(this,document);-->
+<!--  </script>-->
+  <script src="defer.js"></script>
+  <script src="extensions.js"></script>
+
+<!--  <script src="//cdn.jsdelivr.net/npm/@shinsenter/defer.js/dist/defer_plus.min.js"></script>-->
+<!--  <script>-->
+<!--    deferscript('//cdn.jsdelivr.net/npm/@shinsenter/defer.js/dist/polyfill.min.js', 'polyfill-js', 1);-->
+<!--  </script>-->
+  <meta charset="UTF-8">
+  <title>Title</title>
+<!--  <link rel="preload" href="http://localhost:8081/script-delay.php?name=2&delay=3&v=8" as="script">-->
+</head>
+<body>
+  Xin chào
+  <script type="deferjs" src="http://localhost:8081/script-delay.php?name=1&delay=3&v=11"></script>
+  <script type="deferjs" src="http://localhost:8081/script-delay.php?name=2&delay=2&v=10" async></script>
+  <script type="deferjs" src="http://localhost:8081/script-delay.php?name=3&delay=1&v=11" async></script>
+<!--  <script type="text/javascript" src="http://localhost:8081/script-delay.php?name=2&delay=3&v=11"></script>-->
+</body>
+</html>

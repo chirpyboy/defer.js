@@ -50,6 +50,7 @@
 
     // Check if load event was fired
     dom_loaded = (/p/).test(document.readyState);
+    var isFirefox = navigator.userAgent.indexOf('Firefox') >= 0;
 
     /**
      * This is our hero: the `defer` function.
@@ -84,6 +85,76 @@
         }
     }
 
+    // var DOMLoad = (function(){
+    //     var idsLoad = new Set()
+    //     var subscribeCallbacks = [/*{
+    //         hasFired: false, //Đã fire hay chưa
+    //         ids: [], //Danh sách id đăng kí
+    //         cb: Function(), //Function callback
+    //     }*/]
+    //
+    //     function subscribes(ids, callback){
+    //         subscribeCallbacks.push({
+    //             hasFired: false,
+    //             ids: ids,
+    //             cb: callback
+    //         })
+    //         checkAndFireCallback()
+    //     }
+    //
+    //     function subscribe(id, callback){
+    //         subscribes([id], callback)
+    //     }
+    //
+    //     function checkAndFireCallback(){
+    //         subscribeCallbacks.forEach(function(sub){
+    //             if(sub.hasFired !== true){
+    //                 var isComplete = true
+    //                 sub.ids.forEach(function(id){
+    //                     if(!idsLoad.has(id)){
+    //                         isComplete = false
+    //                     }
+    //                 })
+    //                 if(isComplete){
+    //                     sub.hasFired = true
+    //                     sub.cb.apply()
+    //                 }
+    //             }
+    //         })
+    //     }
+    //
+    //     function publish(id){
+    //         idsLoad.add(id)
+    //         checkAndFireCallback()
+    //     }
+    //
+    //     return {
+    //         publish: publish,
+    //         subscribe: subscribe,
+    //         subscribes: subscribes
+    //     }
+    // })()
+
+    /**
+     * Preload js
+     */
+    function preload(url, type){
+        type = type || 'script'
+        if(isFirefox){
+            var o = document.createElement('object');
+            o.data = url;
+            o.width = 0;
+            o.height = 0;
+            document.body.append(o)
+        }else{
+            var link = document.createElement('link');
+            link.setAttribute('rel', 'preload');
+            link.href=url;
+            link.as = type;
+            document.head.append(link)
+        }
+    }
+
     /**
      * Create a DOM element if not exist.
      *
@@ -100,6 +171,15 @@
             if (id) {
                 dom.id = id;
             }
+
+            // dom.onload = function(){
+            //     if(id){
+            //         DOMLoad.publish(id)
+            //     }
+            //     if (callback) {
+            //         callback();
+            //     }
+            // }
 
             if (callback) {
                 dom.onload = callback;
@@ -120,8 +200,19 @@
      * @param   {string|false}  id          The tag id
      * @param   {integer}       delay       The delay time to create the tag
      * @param   {function}      callback    The callback function when load
+     * @param   {array}      depenIds    Danh sách ids cần load xong trước để execute
      * @returns {void}
      */
+    // function deferscript(src, id, delay, callback, depenIds) {
+    //     if(Array.isArray(depenIds) && depenIds.length > 0){
+    //         preload(src)
+    //         DOMLoad.subscribes(depenIds, function(){
+    //             defer(function () {dom('', id, callback).src = src}, 1);
+    //         })
+    //     }else{
+    //         defer(function () {dom('', id, callback).src = src}, delay);
+    //     }
+    // }
     function deferscript(src, id, delay, callback) {
         defer(function () {dom('', id, callback).src = src}, delay);
     }
@@ -133,5 +224,6 @@
     defer._            = dom;
     window.defer       = defer;
     window.deferscript = deferscript;
+    window.deferPreload = preload;
 
 })(this, document, 'pageshow', setTimeout, []);
